@@ -1,6 +1,7 @@
 # Stable Diffusion With Style Tokens
 
-Please refer to [Stable Diffusion](https://github.com/CompVis/stable-diffusion) for setting up.
+This repo is entirly based on [Stable Diffusion](https://github.com/CompVis/stable-diffusion).
+Please refer to Stable Diffusion for setting up.
 
 This fork made the following changes:
 
@@ -28,3 +29,4 @@ To generate images using the style tokens, run the following:
 ```
 python scripts/txt2img.py --prompt "a photograph of an astronaut riding a horse." --ddim_eta 0.0 --n_samples 4 --n_iter 4 --scale 5.0  --ddim_steps 50 --ckpt logs/<Trained .ckpt path> --config configs/latent-diffusion/txt2img-1p4B-eval_prompt.yaml
 ```
+
