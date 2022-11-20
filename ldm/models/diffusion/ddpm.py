@@ -342,6 +342,10 @@ class DDPM(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         loss, loss_dict = self.shared_step(batch)
 
+        # print(self.cond_stage_model.transformer.prompt_token[0])
+        # print(self.cond_stage_model.transformer.token_emb.weight)
+        # print(self.cond_stage_model.transformer.prompt_token[0].grad)
+
         self.log_dict(loss_dict, prog_bar=True,
                       logger=True, on_step=True, on_epoch=True)
 
@@ -526,6 +530,7 @@ class LatentDiffusion(DDPM):
             assert config != '__is_unconditional__'
             model = instantiate_from_config(config)
             self.cond_stage_model = model
+            print('cond model load',type(model))
 
     def _get_denoise_row_from_list(self, samples, desc='', force_no_decoder_quantization=False):
         denoise_row = []
@@ -1367,6 +1372,14 @@ class LatentDiffusion(DDPM):
         if self.learn_logvar:
             print('Diffusion model optimizing logvar')
             params.append(self.logvar)
+        # TODO: this is harded coded, remove this.
+        if True:
+            params = [param for name, param in list(self.cond_stage_model.named_parameters()) if 'prompt_token' in name]# or 'bias' in name or 'norm' in name]
+            # for name, param in list(self.cond_stage_model.named_parameters()):
+            #    if 'prompt_token' in name:
+            #         params.append(param)
+            #         print(param.size(),name,param.requires_grad)
+            print('trainable params:',params)
         opt = torch.optim.AdamW(params, lr=lr)
         if self.use_scheduler:
             assert 'target' in self.scheduler_config
